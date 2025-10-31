@@ -2,32 +2,32 @@ import numpy as np
 from itertools import zip_longest
 from simplex_method import simplex_method
 
+
+# МЕТОД ОТСЕКАЮЩИХ ПРЯМЫХ ГОМОРИ
+
+
 def Gomori(A, x, B):
     # Шаг 5. Находим дробную компоненту
     k = np.where(x % 1 != 0)
     print(f"дробная компонента k-index={k}, k={x[k]}")
     m, n = np.shape(A)
-
     non_basiс = list(set(range(n)) - set(B))
-
     # Шаг 6. Строим базисную и небазисную матрицы
     A_B, A_N = A[:, B], A[:, non_basiс]
     print(f"Базисная матрица:\n{A_B},\n небазисная матрица:\n {A_N}\n")
     # Шаг 7-9. Находим происзведение матриц Q
     Q = np.linalg.inv(A_B) @ A_N
-
+    print(f"Матрица Q:\n {Q}\n")
     # Шаг 10. k-я строка из Q
     l = np.concatenate((np.zeros(len(non_basiс)), Q[k, :].flatten()), dtype='float64')
-
+    print(f"Вектор l:\n {l}\n")
     fractional = np.array([i % 1 for i in l]).flatten()
-
     all_variables = [1 if i not in B else 0 for i in range(n)]
     s = np.array([i * j for i, j in zip_longest(fractional, all_variables, fillvalue=0)])
     s = np.append(s, -1)
-
     x2 = x[k] - np.trunc(x[k])
-
     return s, x2
+
 
 if __name__ == '__main__':
     A = np.array([[3, 2, 1, 0],
